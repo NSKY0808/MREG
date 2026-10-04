@@ -1,0 +1,170 @@
+{
+  "$defs": {
+    "Rule": {
+      "additionalProperties": false,
+      "properties": {
+        "direction": {
+          "enum": [
+            "higher",
+            "lower"
+          ],
+          "title": "Direction",
+          "type": "string"
+        },
+        "field": {
+          "enum": [
+            "accuracy",
+            "precision",
+            "recall",
+            "f1",
+            "latency",
+            "artifact_size",
+            "samples",
+            "positive",
+            "negative"
+          ],
+          "title": "Field",
+          "type": "string"
+        },
+        "id": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        },
+        "inclusive": {
+          "title": "Inclusive",
+          "type": "boolean"
+        },
+        "kind": {
+          "enum": [
+            "minimum",
+            "maximum",
+            "regression",
+            "support",
+            "interval"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "min_negative": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Min Negative",
+          "type": "integer"
+        },
+        "min_positive": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Min Positive",
+          "type": "integer"
+        },
+        "min_samples": {
+          "default": 1,
+          "minimum": 0,
+          "title": "Min Samples",
+          "type": "integer"
+        },
+        "operator": {
+          "enum": [
+            "ge",
+            "le"
+          ],
+          "title": "Operator",
+          "type": "string"
+        },
+        "required": {
+          "title": "Required",
+          "type": "boolean"
+        },
+        "slice": {
+          "anyOf": [
+            {
+              "maxLength": 256,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Slice"
+        },
+        "threshold": {
+          "minimum": 0,
+          "title": "Threshold",
+          "type": "number"
+        },
+        "unit": {
+          "enum": [
+            "score",
+            "ms",
+            "bytes",
+            "count",
+            "percentage_points",
+            "relative_percent"
+          ],
+          "title": "Unit",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "kind",
+        "field",
+        "direction",
+        "operator",
+        "threshold",
+        "unit",
+        "inclusive",
+        "required"
+      ],
+      "title": "Rule",
+      "type": "object"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "policy_id": {
+      "maxLength": 256,
+      "minLength": 1,
+      "title": "Policy Id",
+      "type": "string"
+    },
+    "rules": {
+      "items": {
+        "$ref": "#/$defs/Rule"
+      },
+      "minItems": 1,
+      "title": "Rules",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "task": {
+      "const": "binary_classification",
+      "title": "Task",
+      "type": "string"
+    },
+    "version": {
+      "maxLength": 256,
+      "minLength": 1,
+      "title": "Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "policy_id",
+    "version",
+    "task",
+    "rules"
+  ],
+  "title": "Policy",
+  "type": "object"
+}

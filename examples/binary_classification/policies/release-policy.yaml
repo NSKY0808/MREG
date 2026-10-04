@@ -1,0 +1,54 @@
+schema_version: "1.0"
+policy_id: binary-example
+version: "1"
+task: binary_classification
+rules:
+  - id: aggregate-f1
+    kind: minimum
+    field: f1
+    direction: higher
+    operator: ge
+    threshold: 0.80
+    unit: score
+    inclusive: true
+    required: true
+    min_samples: 100
+  - id: f1-regression
+    kind: regression
+    field: f1
+    direction: higher
+    operator: le
+    threshold: 1.0
+    unit: percentage_points
+    inclusive: true
+    required: true
+  - id: priority-recall
+    kind: minimum
+    field: recall
+    slice: priority
+    direction: higher
+    operator: ge
+    threshold: 0.75
+    unit: score
+    inclusive: true
+    required: true
+    min_samples: 20
+    min_positive: 10
+  - id: latency-p95
+    kind: maximum
+    field: latency
+    direction: lower
+    operator: le
+    threshold: 60.0
+    unit: ms
+    inclusive: true
+    required: true
+  - id: artifact-size
+    kind: maximum
+    field: artifact_size
+    direction: lower
+    operator: le
+    threshold: 1000000.0
+    unit: bytes
+    inclusive: true
+    required: true

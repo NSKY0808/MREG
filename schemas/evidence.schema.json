@@ -1,0 +1,539 @@
+{
+  "$defs": {
+    "Benchmark": {
+      "additionalProperties": false,
+      "properties": {
+        "context": {
+          "$ref": "#/$defs/BenchmarkContext"
+        },
+        "latency": {
+          "$ref": "#/$defs/Metric"
+        },
+        "origin": {
+          "enum": [
+            "computed",
+            "imported",
+            "externally_asserted"
+          ],
+          "title": "Origin",
+          "type": "string"
+        }
+      },
+      "required": [
+        "origin",
+        "context",
+        "latency"
+      ],
+      "title": "Benchmark",
+      "type": "object"
+    },
+    "BenchmarkContext": {
+      "additionalProperties": false,
+      "properties": {
+        "batch_size": {
+          "minimum": 1,
+          "title": "Batch Size",
+          "type": "integer"
+        },
+        "concurrency": {
+          "minimum": 1,
+          "title": "Concurrency",
+          "type": "integer"
+        },
+        "hardware": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Hardware",
+          "type": "string"
+        },
+        "repetitions": {
+          "minimum": 1,
+          "title": "Repetitions",
+          "type": "integer"
+        },
+        "runtime": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Runtime",
+          "type": "string"
+        },
+        "statistic": {
+          "const": "p95",
+          "title": "Statistic",
+          "type": "string"
+        },
+        "warmup": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Warmup",
+          "type": "string"
+        },
+        "workload": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Workload",
+          "type": "string"
+        }
+      },
+      "required": [
+        "hardware",
+        "runtime",
+        "workload",
+        "concurrency",
+        "batch_size",
+        "warmup",
+        "repetitions",
+        "statistic"
+      ],
+      "title": "BenchmarkContext",
+      "type": "object"
+    },
+    "BootstrapConfig": {
+      "additionalProperties": false,
+      "properties": {
+        "confidence": {
+          "exclusiveMaximum": 1,
+          "exclusiveMinimum": 0,
+          "title": "Confidence",
+          "type": "number"
+        },
+        "method": {
+          "const": "paired_percentile",
+          "default": "paired_percentile",
+          "title": "Method",
+          "type": "string"
+        },
+        "resamples": {
+          "maximum": 100000,
+          "minimum": 100,
+          "title": "Resamples",
+          "type": "integer"
+        },
+        "seed": {
+          "minimum": 0,
+          "title": "Seed",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "seed",
+        "resamples",
+        "confidence"
+      ],
+      "title": "BootstrapConfig",
+      "type": "object"
+    },
+    "EvaluationContext": {
+      "additionalProperties": false,
+      "properties": {
+        "dataset_fingerprint": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Dataset Fingerprint",
+          "type": "string"
+        },
+        "dataset_version": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Dataset Version",
+          "type": "string"
+        },
+        "examples_fingerprint": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Examples Fingerprint",
+          "type": "string"
+        },
+        "label_definition": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Label Definition",
+          "type": "string"
+        },
+        "labels_fingerprint": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Labels Fingerprint",
+          "type": "string"
+        },
+        "positive_class": {
+          "enum": [
+            0,
+            1
+          ],
+          "title": "Positive Class",
+          "type": "integer"
+        },
+        "prediction_threshold": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Prediction Threshold",
+          "type": "number"
+        },
+        "split": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Split",
+          "type": "string"
+        }
+      },
+      "required": [
+        "dataset_fingerprint",
+        "dataset_version",
+        "split",
+        "examples_fingerprint",
+        "labels_fingerprint",
+        "label_definition",
+        "positive_class",
+        "prediction_threshold"
+      ],
+      "title": "EvaluationContext",
+      "type": "object"
+    },
+    "Interval": {
+      "additionalProperties": false,
+      "properties": {
+        "baseline_artifact_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Baseline Artifact Digest",
+          "type": "string"
+        },
+        "candidate_artifact_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Candidate Artifact Digest",
+          "type": "string"
+        },
+        "config": {
+          "$ref": "#/$defs/BootstrapConfig"
+        },
+        "difference": {
+          "maximum": 1,
+          "minimum": -1,
+          "title": "Difference",
+          "type": "number"
+        },
+        "examples_fingerprint": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Examples Fingerprint",
+          "type": "string"
+        },
+        "lower": {
+          "maximum": 1,
+          "minimum": -1,
+          "title": "Lower",
+          "type": "number"
+        },
+        "metric": {
+          "enum": [
+            "accuracy",
+            "precision",
+            "recall",
+            "f1"
+          ],
+          "title": "Metric",
+          "type": "string"
+        },
+        "slice": {
+          "anyOf": [
+            {
+              "maxLength": 256,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Slice"
+        },
+        "upper": {
+          "maximum": 1,
+          "minimum": -1,
+          "title": "Upper",
+          "type": "number"
+        }
+      },
+      "required": [
+        "metric",
+        "lower",
+        "upper",
+        "difference",
+        "config",
+        "examples_fingerprint",
+        "baseline_artifact_digest",
+        "candidate_artifact_digest"
+      ],
+      "title": "Interval",
+      "type": "object"
+    },
+    "Metric": {
+      "additionalProperties": false,
+      "properties": {
+        "averaging": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Averaging",
+          "type": "string"
+        },
+        "definition": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Definition",
+          "type": "string"
+        },
+        "unit": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Unit",
+          "type": "string"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Value"
+        }
+      },
+      "required": [
+        "value",
+        "unit",
+        "definition",
+        "averaging"
+      ],
+      "title": "Metric",
+      "type": "object"
+    },
+    "ModelIdentity": {
+      "additionalProperties": false,
+      "properties": {
+        "artifact_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Artifact Digest",
+          "type": "string"
+        },
+        "artifact_size_bytes": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Artifact Size Bytes"
+        },
+        "configuration_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Configuration Digest",
+          "type": "string"
+        },
+        "model_id": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Model Id",
+          "type": "string"
+        },
+        "source_revision": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Source Revision",
+          "type": "string"
+        },
+        "version": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "model_id",
+        "version",
+        "artifact_digest",
+        "artifact_size_bytes",
+        "source_revision",
+        "configuration_digest"
+      ],
+      "title": "ModelIdentity",
+      "type": "object"
+    },
+    "RunEvidence": {
+      "additionalProperties": false,
+      "properties": {
+        "benchmark": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Benchmark"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "context": {
+          "$ref": "#/$defs/EvaluationContext"
+        },
+        "metrics": {
+          "additionalProperties": {
+            "$ref": "#/$defs/Metric"
+          },
+          "title": "Metrics",
+          "type": "object"
+        },
+        "model": {
+          "$ref": "#/$defs/ModelIdentity"
+        },
+        "origin": {
+          "enum": [
+            "computed",
+            "imported",
+            "externally_asserted"
+          ],
+          "title": "Origin",
+          "type": "string"
+        },
+        "slices": {
+          "additionalProperties": {
+            "$ref": "#/$defs/Slice"
+          },
+          "title": "Slices",
+          "type": "object"
+        },
+        "support": {
+          "$ref": "#/$defs/Support"
+        }
+      },
+      "required": [
+        "model",
+        "origin",
+        "context",
+        "support",
+        "metrics"
+      ],
+      "title": "RunEvidence",
+      "type": "object"
+    },
+    "Slice": {
+      "additionalProperties": false,
+      "properties": {
+        "definition": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Definition",
+          "type": "string"
+        },
+        "examples_fingerprint": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Examples Fingerprint",
+          "type": "string"
+        },
+        "metrics": {
+          "additionalProperties": {
+            "$ref": "#/$defs/Metric"
+          },
+          "title": "Metrics",
+          "type": "object"
+        },
+        "support": {
+          "$ref": "#/$defs/Support"
+        }
+      },
+      "required": [
+        "definition",
+        "examples_fingerprint",
+        "support",
+        "metrics"
+      ],
+      "title": "Slice",
+      "type": "object"
+    },
+    "Support": {
+      "additionalProperties": false,
+      "properties": {
+        "negative": {
+          "minimum": 0,
+          "title": "Negative",
+          "type": "integer"
+        },
+        "positive": {
+          "minimum": 0,
+          "title": "Positive",
+          "type": "integer"
+        },
+        "samples": {
+          "minimum": 0,
+          "title": "Samples",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "samples",
+        "positive",
+        "negative"
+      ],
+      "title": "Support",
+      "type": "object"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "baseline": {
+      "$ref": "#/$defs/RunEvidence"
+    },
+    "candidate": {
+      "$ref": "#/$defs/RunEvidence"
+    },
+    "collected_at": {
+      "maxLength": 256,
+      "minLength": 1,
+      "title": "Collected At",
+      "type": "string"
+    },
+    "evaluator_version": {
+      "maxLength": 256,
+      "minLength": 1,
+      "title": "Evaluator Version",
+      "type": "string"
+    },
+    "evidence_id": {
+      "maxLength": 256,
+      "minLength": 1,
+      "title": "Evidence Id",
+      "type": "string"
+    },
+    "intervals": {
+      "items": {
+        "$ref": "#/$defs/Interval"
+      },
+      "title": "Intervals",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "task": {
+      "const": "binary_classification",
+      "title": "Task",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "task",
+    "evidence_id",
+    "collected_at",
+    "evaluator_version",
+    "baseline",
+    "candidate"
+  ],
+  "title": "Evidence",
+  "type": "object"
+}

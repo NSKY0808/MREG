@@ -1,0 +1,207 @@
+{
+  "$defs": {
+    "CheckResult": {
+      "additionalProperties": false,
+      "properties": {
+        "baseline_value": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Baseline Value"
+        },
+        "candidate_value": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Candidate Value"
+        },
+        "compared_value": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Compared Value"
+        },
+        "evidence_references": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Evidence References",
+          "type": "array"
+        },
+        "next_investigation": {
+          "title": "Next Investigation",
+          "type": "string"
+        },
+        "reason_codes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Reason Codes",
+          "type": "array"
+        },
+        "required": {
+          "title": "Required",
+          "type": "boolean"
+        },
+        "requirement": {
+          "title": "Requirement",
+          "type": "string"
+        },
+        "rule_id": {
+          "title": "Rule Id",
+          "type": "string"
+        },
+        "state": {
+          "enum": [
+            "PASS",
+            "FAIL",
+            "INSUFFICIENT_EVIDENCE",
+            "ERROR"
+          ],
+          "title": "State",
+          "type": "string"
+        }
+      },
+      "required": [
+        "rule_id",
+        "required",
+        "state",
+        "reason_codes",
+        "requirement",
+        "evidence_references",
+        "next_investigation"
+      ],
+      "title": "CheckResult",
+      "type": "object"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "baseline_identity": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Baseline Identity",
+      "type": "object"
+    },
+    "candidate_identity": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Candidate Identity",
+      "type": "object"
+    },
+    "checks": {
+      "items": {
+        "$ref": "#/$defs/CheckResult"
+      },
+      "title": "Checks",
+      "type": "array"
+    },
+    "evidence_digest": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Evidence Digest"
+    },
+    "evidence_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Evidence Id"
+    },
+    "implementation_version": {
+      "default": "0.1.0",
+      "title": "Implementation Version",
+      "type": "string"
+    },
+    "policy_digest": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Policy Digest"
+    },
+    "policy_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Policy Id"
+    },
+    "reason_codes": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Reason Codes",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "semantics_version": {
+      "default": "1.0",
+      "title": "Semantics Version",
+      "type": "string"
+    },
+    "verdict": {
+      "enum": [
+        "PASS",
+        "FAIL",
+        "INSUFFICIENT_EVIDENCE",
+        "ERROR"
+      ],
+      "title": "Verdict",
+      "type": "string"
+    }
+  },
+  "required": [
+    "verdict"
+  ],
+  "title": "Result",
+  "type": "object"
+}

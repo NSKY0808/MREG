@@ -1,0 +1,83 @@
+name: MREG example
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install uv==0.12.22
+      - run: uv sync --locked --extra evaluation
+      - run: echo "$GITHUB_WORKSPACE/.venv/bin" >> "$GITHUB_PATH"
+      - run: python -m pytest -q
+      - run: python -m ruff check .
+      - run: python -m ruff format --check .
+      - run: python -m mypy
+      - run: python -m bandit -r src -q
+
+  evaluation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install uv==0.12.22
+      - run: uv sync --locked --extra evaluation --no-dev
+      - run: echo "$GITHUB_WORKSPACE/.venv/bin" >> "$GITHUB_PATH"
+      - run: python examples/binary_classification/scripts/generate.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: candidate-evidence
+          path: examples/binary_classification/generated/pass.json
+          if-no-files-found: error
+
+  release-review:
+    needs: evaluation
+    runs-on: ubuntu-latest
+    steps:
+      # Gate code AND policy come from the immutable PR target revision.
+      # Non-PR runs use the current commit, after its ordinary review process.
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.base.sha || github.sha }}
+          persist-credentials: false
+          path: trusted
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/download-artifact@v4
+        with:
+          name: candidate-evidence
+          path: incoming
+      - run: python -m pip install uv==0.12.22
+      - run: uv sync --project trusted --locked --no-dev
+      - run: echo "$GITHUB_WORKSPACE/trusted/.venv/bin" >> "$GITHUB_PATH"
+      - name: Gate with trusted policy
+        run: >-
+          mreg check --evidence incoming/pass.json
+          --policy trusted/examples/binary_classification/policies/release-policy.yaml
+          --output review
+      - name: Preserve review for every verdict
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-review
+          path: review/
+          if-no-files-found: warn
+      - name: Eligible for the next review step
+        run: echo 'PASS; eligible for the next configured step. No deployment performed.'
